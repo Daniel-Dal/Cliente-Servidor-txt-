@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Usuario</title>
+</head>
+<body>
+    <h1>Formulario para agregar un usuario</h1>
+    <label for="nombre">Nombre del Usuario:</label>
+    <input type="text" id="nombre" name="nombre" required>
+    <br><br>
+    <button onclick="agregarUsuario()">Agregar Usuario</button>
+
+    <script>
+        function agregarUsuario() {
+            const nombre = document.getElementById('nombre').value;
+            if (!nombre) {
+                alert("Por favor, ingresa un nombre.");
+                return;
+            }
+
+            // Realizar la petición POST para agregar el usuario
+            fetch('http://127.0.0.1:5000/agregar_usuario', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `nombre=${nombre}`
+            })
+            .then(response => {
+                // Verificamos si la respuesta es exitosa
+                if (response.ok) {
+                    return response.json();  // Si la respuesta es OK, parseamos la respuesta JSON
+                } else {
+                    throw new Error('Hubo un error al agregar el usuario');
+                }
+            })
+            .then(data => {
+                // Verificamos si el servidor nos devolvió el usuario correctamente
+                alert("Usuario agregado correctamente: " + data.nombre + " con ID: " + data.id);
+            })
+            .catch(error => {
+                // Si hay un error en la solicitud, mostramos el mensaje de error
+                console.error("Error al agregar el usuario:", error);
+                alert("Hubo un error al agregar el usuario.");
+            });
+        }
+    </script>
+</body>
+</html>
+
